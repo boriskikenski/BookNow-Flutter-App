@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "696172708564",
+    "project_id": "booknow-app-bkikenski",
+    "storage_bucket": "booknow-app-bkikenski.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696172708564:android:ef1d13a871bed776997141",
+        "android_client_info": {
+          "package_name": "com.boriskikenski.book_now"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8zsHbaieDh7R7vfPSX8uQvI1KB7QyZug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
