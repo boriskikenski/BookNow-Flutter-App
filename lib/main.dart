@@ -1,7 +1,10 @@
+import 'package:book_now/screens/create_business_screen.dart';
 import 'package:book_now/screens/home_screen.dart';
 import 'package:book_now/screens/initial_screen.dart';
 import 'package:book_now/screens/login_screen.dart';
+import 'package:book_now/screens/profile_screen.dart';
 import 'package:book_now/screens/register_screen.dart';
+import 'package:book_now/screens/reservations_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,6 +24,9 @@ class MyApp extends StatelessWidget {
         '/login/': (BuildContext context) => const LoginScreen(),
         '/register/': (BuildContext context) => const RegisterScreen(),
         '/home/': (BuildContext context) => const HomeScreen(),
+        '/create-business/': (BuildContext context) => const CreateBusinessScreen(),
+        '/profile/': (BuildContext context) => const ProfileScreen(),
+        '/reservations/': (BuildContext context) => const ReservationsScreen(),
       },
     );
   }
