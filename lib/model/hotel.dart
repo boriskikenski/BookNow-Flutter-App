@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import './costumer.dart';
 import './location.dart';
 import './review.dart';
@@ -8,17 +10,17 @@ class Hotel {
   String businessName;
   Costumer owner;
   Location location;
-  DateTime openingTime;
-  DateTime closingTime;
-  Map<DateTime, List<Room>> units;
+  TimeOfDay openingTime;
+  TimeOfDay closingTime;
+  Map<DateTime, List<Room>> rooms;
   double reviewGrade;
   int reviewsSum;
   int reviewsCounter;
   Review review;
   BusinessTypes filter;
-  //todo website
+  String website;
 
   Hotel(this.businessName, this.owner, this.location, this.openingTime,
-      this.closingTime, this.units, this.reviewGrade, this.reviewsSum,
-      this.reviewsCounter, this.review, this.filter);
+      this.closingTime, this.rooms, this.reviewGrade, this.reviewsSum,
+      this.reviewsCounter, this.review, this.filter, this.website);
 }

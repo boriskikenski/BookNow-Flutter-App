@@ -1,7 +1,7 @@
 class Room {
-  int roomNumber;
-  int peoplePerRoom;
-  bool isReserved;
+  int capacity;
+  int numberOfUnits;
+  int availableUnits;
 
-  Room(this.roomNumber, this.peoplePerRoom, this.isReserved);
+  Room(this.capacity, this.numberOfUnits, this.availableUnits);
 }
