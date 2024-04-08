@@ -6,11 +6,21 @@ class Costumer {
   String fullName;
   String username;
   String email;
-  String password;
   List<Hotel> hotels;
   List<Business> business;
   List<Reservation> reservationList;
 
-  Costumer(this.fullName, this.username, this.email, this.password,
-      this.hotels, this.business, this.reservationList);
+  Costumer(this.fullName, this.username, this.email, this.hotels, this.business,
+      this.reservationList);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'fullName': fullName,
+      'username': username,
+      'email': email,
+      'hotels': hotels.map((hotel) => hotel.toMap()).toList(),
+      'business': business.map((business) => business.toMap()).toList(),
+      'reservationList': '', //TODO tobe implemented
+    };
+  }
 }
