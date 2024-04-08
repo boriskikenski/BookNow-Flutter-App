@@ -1,6 +1,6 @@
 class LoginDTO {
-  String username;
+  String email;
   String password;
 
-  LoginDTO(this.username, this.password);
+  LoginDTO(this.email, this.password);
 }

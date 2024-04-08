@@ -14,20 +14,20 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late final TextEditingController _username;
+  late final TextEditingController _email;
   late final TextEditingController _password;
   String errorMessage = '';
 
   @override
   void initState() {
-    _username = TextEditingController();
+    _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _username.dispose();
+    _email.dispose();
     _password.dispose();
     super.dispose();
   }
@@ -59,11 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: TextField(
-                            controller: _username,
+                            controller: _email,
                             obscureText: false,
                             decoration: InputDecoration(
-                              hintText: 'Username',
-                              labelText: 'Username',
+                              hintText: 'Email',
+                              labelText: 'Email',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 10.0),
                           child: ElevatedButton(
                             onPressed: () async {
-                              LoginDTO user = LoginDTO(_username.text, _password.text);
+                              LoginDTO user = LoginDTO(_email.text, _password.text);
                               try {
                                 await AuthService().login(user);
                                 Navigator.pushNamedAndRemoveUntil(context, '/home/', (route) => false);

@@ -3,6 +3,8 @@ import 'package:book_now/model/dto/registerDTO.dart';
 import 'package:book_now/model/exception/password_creation_exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../model/costumer.dart';
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -20,13 +22,19 @@ class AuthService {
       rethrow;
     }
 
-    //TODO username and other data
+    Costumer c = Costumer(
+      costumer.fullName,
+      costumer.username,
+      costumer.email,
+      [], [], [],
+    );
+    c.saveCostumer();
   }
 
   login(LoginDTO user) async {
     try {
       await _auth.signInWithEmailAndPassword(
-          email: user.username,
+          email: user.email,
           password: user.password
       );
     } catch (e) {
