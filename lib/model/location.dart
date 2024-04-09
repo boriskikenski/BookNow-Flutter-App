@@ -15,4 +15,13 @@ class Location {
       'streetNumber': streetNumber,
     };
   }
+
+  static Location fromMap(Map<String, dynamic> map) {
+    return Location(
+      map['country'],
+      map['city'],
+      map['street'],
+      map['streetNumber'],
+    );
+  }
 }

@@ -41,4 +41,14 @@ class AuthService {
       rethrow;
     }
   }
+
+  static Future<Costumer?> getCurrentCostumer() async {
+    String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (currentUserEmail != null) {
+      return await Costumer.findByEmail(currentUserEmail);
+    } else {
+      return null;
+    }
+  }
 }

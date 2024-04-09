@@ -16,4 +16,13 @@ class Review {
       'date': date.toIso8601String(),
     };
   }
+
+  static Review fromMap(Map<String, dynamic> map) {
+    return Review(
+      Costumer.fromMap(map['reviewer']),
+      map['grade'],
+      map['comment'],
+      DateTime.parse(map['date']),
+    );
+  }
 }

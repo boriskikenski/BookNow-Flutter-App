@@ -2,6 +2,7 @@ import 'package:book_now/screens/create_business_screen.dart';
 import 'package:book_now/screens/home_screen.dart';
 import 'package:book_now/screens/initial_screen.dart';
 import 'package:book_now/screens/login_screen.dart';
+import 'package:book_now/screens/my_businesses_screen.dart';
 import 'package:book_now/screens/profile_screen.dart';
 import 'package:book_now/screens/register_screen.dart';
 import 'package:book_now/screens/reservations_screen.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/create-business/': (BuildContext context) => const CreateBusinessScreen(),
         '/profile/': (BuildContext context) => const ProfileScreen(),
         '/reservations/': (BuildContext context) => const ReservationsScreen(),
+        '/my-businesses/': (BuildContext context) => const BusinessesScreen(),
       },
     );
   }

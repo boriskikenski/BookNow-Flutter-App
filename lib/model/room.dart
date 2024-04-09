@@ -12,4 +12,12 @@ class Room {
       'availableUnits': availableUnits,
     };
   }
+
+  static Room fromMap(Map<String, dynamic> map) {
+    return Room(
+      map['capacity'],
+      map['numberOfUnits'],
+      map['availableUnits'],
+    );
+  }
 }

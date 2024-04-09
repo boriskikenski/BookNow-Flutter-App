@@ -15,4 +15,13 @@ class Appointment {
       'startingTime': startingTime.toIso8601String(),
     };
   }
+
+  static Appointment fromMap(Map<String, dynamic> map) {
+    return Appointment(
+      map['minPerSlot'],
+      map['peoplePerSlot'],
+      map['numberOfSlots'],
+      DateTime.parse(map['startingTime']),
+    );
+  }
 }

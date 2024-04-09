@@ -44,6 +44,12 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            title: const Text('My businesses'),
+            onTap: () {
+              Navigator.pushNamed(context, '/my-businesses/');
+            },
+          ),
+          ListTile(
             title: const Text('Create business'),
             onTap: () {
               Navigator.pushNamed(context, '/create-business/');

@@ -1,4 +1,10 @@
 import 'package:book_now/components/custom_drawer.dart';
+import 'package:book_now/model/business.dart';
+import 'package:book_now/model/costumer.dart';
+import 'package:book_now/model/exception/business_already_exists_exception.dart';
+import 'package:book_now/model/hotel.dart';
+import 'package:book_now/model/location.dart';
+import 'package:book_now/service/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_app_bar.dart';
@@ -32,6 +38,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
   List<Room> hotelRooms = [];
   late final TextEditingController _roomCapacity;
   late final TextEditingController _numberOfUnits;
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -274,8 +281,8 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                           keyboardType: TextInputType.number,
                           obscureText: false,
                           decoration: InputDecoration(
-                            hintText: 'How long is one appointment',
-                            labelText: 'How long is one appointment',
+                            hintText: 'How long is one appointment [min]',
+                            labelText: 'How long is one appointment [min]',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -310,6 +317,52 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
+                        ),
+                      ),
+                      if(errorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Center(
+                            child: Text(
+                              errorMessage,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 10.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            Costumer? currentCostumer = await AuthService.getCurrentCostumer();
+                            Location businessLocation = Location(
+                                _country.text,
+                                _city.text,
+                                _street.text,
+                                int.parse(_streetNumber.text));
+                            Business business = Business(
+                                _businessName.text,
+                                currentCostumer?.email ?? '',
+                                businessLocation,
+                                _selectedStartTime,
+                                _selectedClosingTime,
+                                {}, //TODO tobe implemented
+                                0,
+                                0,
+                                0,
+                                [],
+                                _selectedBusinessType!,
+                                _website.text);
+                            currentCostumer?.addBusiness(_businessName.text);
+                            try {
+                              await business.saveBusiness();
+                              Navigator.pushNamedAndRemoveUntil(context, '/my-businesses/', (route) => false);
+                            } on BusinessAlreadyExistException catch (e) {
+                              setState(() {
+                                errorMessage = e.toString();
+                              });
+                            }
+                          },
+                          child: const Text('Create business'),
                         ),
                       ),
                     ],
@@ -400,18 +453,55 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                           );
                         },
                       ),
+                      if(errorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Center(
+                            child: Text(
+                              errorMessage,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 10.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            Costumer? currentCostumer = await AuthService.getCurrentCostumer();
+                            Location businessLocation = Location(
+                                _country.text,
+                                _city.text,
+                                _street.text,
+                                int.parse(_streetNumber.text));
+                            Hotel hotel = Hotel(
+                                _businessName.text,
+                                currentCostumer?.email ?? '',
+                                businessLocation,
+                                _selectedStartTime,
+                                _selectedClosingTime,
+                                {}, //TODO tobe implemented
+                                0,
+                                0,
+                                0,
+                                [],
+                                _selectedBusinessType!,
+                                _website.text);
+                            currentCostumer?.addHotel(_businessName.text);
+                            try {
+                              await hotel.saveHotel();
+                              Navigator.pushNamedAndRemoveUntil(context, '/my-businesses/', (route) => false);
+                            } on BusinessAlreadyExistException catch (e) {
+                              setState(() {
+                                errorMessage = e.toString();
+                              });
+                            }
+                          },
+                          child: const Text('Create business'),
+                        ),
+                      ),
                     ],
                   )
                 ],
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      //TODO
-                    },
-                    child: const Text('Create business'),
-                  ),
-                ),
               ],
             ),
           ),
