@@ -5,11 +5,15 @@ import 'package:book_now/model/exception/business_already_exists_exception.dart'
 import 'package:book_now/model/hotel.dart';
 import 'package:book_now/model/location.dart';
 import 'package:book_now/service/auth_service.dart';
+import 'package:book_now/service/image_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_app_bar.dart';
 import '../model/enumerations/business_types.dart';
 import '../model/room.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class CreateBusinessScreen extends StatefulWidget {
   const CreateBusinessScreen({super.key});
@@ -39,6 +43,8 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
   late final TextEditingController _roomCapacity;
   late final TextEditingController _numberOfUnits;
   String errorMessage = '';
+  String _image = '';
+  Color _selectImageButtonColor = Colors.white;
 
   @override
   void initState() {
@@ -212,6 +218,41 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                     ),
                       const Padding(
                         padding: EdgeInsets.only(top: 15.0),
+                        child: Text('Image:',
+                          style: TextStyle(
+                              fontSize: 16
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+                            if (pickedFile != null) {
+                              setState(() {
+                                _image = ImageService.convertImageToBase64String(File(pickedFile.path));
+                              });
+                            }
+                            _selectImageButtonColor = Colors.yellow;
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(_selectImageButtonColor),
+                          ),
+                          child: const Text('Select image'),
+                        ),
+                      ),
+                      if (_image.isNotEmpty)
+                        Center(
+                          child: Image.memory(
+                            ImageService.imageFromBase64String(_image),
+                            width: 300,
+                            height: 300,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 15.0),
                         child: Text('Working hours:',
                           style: TextStyle(
                               fontSize: 16
@@ -351,7 +392,8 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                                 0,
                                 [],
                                 _selectedBusinessType!,
-                                _website.text);
+                                _website.text,
+                                _image);
                             currentCostumer?.addBusiness(_businessName.text);
                             try {
                               await business.saveBusiness();
@@ -485,7 +527,8 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                                 0,
                                 [],
                                 _selectedBusinessType!,
-                                _website.text);
+                                _website.text,
+                                _image);
                             currentCostumer?.addHotel(_businessName.text);
                             try {
                               await hotel.saveHotel();

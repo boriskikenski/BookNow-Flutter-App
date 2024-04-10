@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import './exception/business_already_exists_exception.dart';
 import './appointment.dart';
 import './review.dart';
-import './costumer.dart';
 import './location.dart';
 import './enumerations/business_types.dart';
 
@@ -20,10 +19,11 @@ class Business {
   List<Review> reviews;
   BusinessTypes filter;
   String website;
+  String encodedImage;
 
   Business(this.businessName, this.ownerEmail, this.location, this.openingTime,
       this.closingTime, this.appointments, this.reviewGrade, this.reviewsSum,
-      this.reviewsCounter, this.reviews, this.filter, this.website);
+      this.reviewsCounter, this.reviews, this.filter, this.website, this.encodedImage);
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,6 +39,7 @@ class Business {
       'reviews': reviews.map((review) => review.toMap()).toList(),
       'filter': filter.toString(),
       'website': website,
+      'encodedImage': encodedImage,
     };
   }
 
@@ -70,6 +71,7 @@ class Business {
       (map['reviews'] as List<dynamic>).map((review) => Review.fromMap(review)).toList(),
       BusinessTypes.values.firstWhere((e) => e.toString() == map['filter']),
       map['website'],
+      map['encodedImage'],
     );
   }
 

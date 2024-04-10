@@ -20,10 +20,11 @@ class Hotel {
   List<Review> reviews;
   BusinessTypes filter;
   String website;
+  String encodedImage;
 
   Hotel(this.hotelName, this.ownerEmail, this.location, this.openingTime,
       this.closingTime, this.rooms, this.reviewGrade, this.reviewsSum,
-      this.reviewsCounter, this.reviews, this.filter, this.website);
+      this.reviewsCounter, this.reviews, this.filter, this.website, this.encodedImage);
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,6 +40,7 @@ class Hotel {
       'reviews': reviews.map((review) => review.toMap()).toList(),
       'filter': filter.toString(),
       'website': website,
+      'encodedImage': encodedImage,
     };
   }
 
@@ -62,6 +64,7 @@ class Hotel {
       (map['reviews'] as List<dynamic>).map((review) => Review.fromMap(review)).toList(),
       BusinessTypes.values.firstWhere((e) => e.toString() == map['filter']),
       map['website'],
+      map['encodedImage'],
     );
   }
 
