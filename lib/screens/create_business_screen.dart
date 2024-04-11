@@ -39,6 +39,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
   late final TextEditingController _minPerAppointment;
   late final TextEditingController _peoplePerAppointment;
   late final TextEditingController _slotsPerStartingTime;
+  late final TextEditingController _price;
   List<Room> hotelRooms = [];
   late final TextEditingController _roomCapacity;
   late final TextEditingController _numberOfUnits;
@@ -57,6 +58,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
     _minPerAppointment = TextEditingController();
     _peoplePerAppointment = TextEditingController();
     _slotsPerStartingTime = TextEditingController();
+    _price = TextEditingController();
     _roomCapacity = TextEditingController();
     _numberOfUnits = TextEditingController();
     super.initState();
@@ -73,6 +75,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
     _minPerAppointment.dispose();
     _peoplePerAppointment.dispose();
     _slotsPerStartingTime.dispose();
+    _price.dispose();
     _roomCapacity.dispose();
     _numberOfUnits.dispose();
     super.dispose();
@@ -360,6 +363,21 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15.0),
+                        child: TextField(
+                          controller: _price,
+                          keyboardType: TextInputType.number,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            hintText: 'Price per appointment [\$]',
+                            labelText: 'Price per appointment [\$]',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
                       if(errorMessage.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -453,16 +471,33 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                         ),
                       ),
                       Padding(
+                        padding: const EdgeInsets.only(top: 15.0),
+                        child: TextField(
+                          controller: _price,
+                          keyboardType: TextInputType.number,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            hintText: 'Price per night [\$]',
+                            labelText: 'Price per night [\$]',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
                         padding: const EdgeInsets.only(top: 5.0),
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
                               int roomCapacity = int.tryParse(_roomCapacity.text) ?? 0;
                               int numberOfUnits = int.tryParse(_numberOfUnits.text) ?? 0;
-                              hotelRooms.add(Room(roomCapacity, numberOfUnits, numberOfUnits));
+                              double pricePerNight = double.tryParse(_price.text) ?? 0;
+                              hotelRooms.add(Room(roomCapacity, numberOfUnits, numberOfUnits, pricePerNight));
 
                               _roomCapacity.clear();
                               _numberOfUnits.clear();
+                              _price.clear();
                             });
                           },
                           child: const Text('Add room(s)'),

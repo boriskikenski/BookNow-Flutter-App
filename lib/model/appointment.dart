@@ -3,9 +3,10 @@ class Appointment {
   int peoplePerSlot;
   int numberOfSlots;
   DateTime startingTime;
+  double pricePerAppointment;
 
   Appointment(this.minPerSlot, this.peoplePerSlot, this.numberOfSlots,
-      this.startingTime);
+      this.startingTime, this.pricePerAppointment);
 
   Map<String, dynamic> toMap() {
     return {
@@ -13,6 +14,7 @@ class Appointment {
       'peoplePerSlot': peoplePerSlot,
       'numberOfSlots': numberOfSlots,
       'startingTime': startingTime.toIso8601String(),
+      'pricePerAppointment': pricePerAppointment,
     };
   }
 
@@ -22,6 +24,7 @@ class Appointment {
       map['peoplePerSlot'],
       map['numberOfSlots'],
       DateTime.parse(map['startingTime']),
+      map['pricePerAppointment'],
     );
   }
 }
