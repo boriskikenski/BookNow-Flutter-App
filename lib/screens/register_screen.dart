@@ -1,4 +1,4 @@
-import 'package:book_now/model/dto/registerDTO.dart';
+import 'package:book_now/model/dto/register_dto.dart';
 import 'package:book_now/model/exception/password_creation_exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';

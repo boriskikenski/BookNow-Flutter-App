@@ -91,6 +91,19 @@ class Business {
     await FirebaseFirestore.instance.collection('businesses').doc(businessName).set(toMap());
   }
 
+  static Future<List<Business>> fetchAllBusinesses() async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('businesses')
+        .get();
+
+    final List<Business> businesses = querySnapshot.docs.map((doc) {
+      final businessData = doc.data();
+      return Business.fromMap(businessData);
+    }).toList();
+
+    return businesses;
+  }
+
   Future<Business?> findByName(String businessName) async {
     final businessSnapshot = await FirebaseFirestore.instance
         .collection('businesses')

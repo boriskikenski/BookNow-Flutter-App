@@ -29,7 +29,7 @@ class Hotel {
   Map<String, dynamic> toMap() {
     return {
       'businessName': hotelName,
-      'owner': ownerEmail,
+      'ownerEmail': ownerEmail,
       'location': location.toMap(),
       'openingTime': '${openingTime.hour}:${openingTime.minute}',
       'closingTime': '${closingTime.hour}:${closingTime.minute}',
@@ -90,6 +90,19 @@ class Hotel {
       throw BusinessAlreadyExistException();
     }
     await FirebaseFirestore.instance.collection('hotels').doc(hotelName).set(toMap());
+  }
+
+  static Future<List<Hotel>> fetchAllHotels() async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('hotels')
+        .get();
+
+    final List<Hotel> hotels = querySnapshot.docs.map((doc) {
+      final hotelData = doc.data();
+      return Hotel.fromMap(hotelData);
+    }).toList();
+
+    return hotels;
   }
 
   Future<Hotel?> findByName(String hotelName) async {

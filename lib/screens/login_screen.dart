@@ -1,4 +1,4 @@
-import 'package:book_now/model/dto/loginDTO.dart';
+import 'package:book_now/model/dto/login_dto.dart';
 import 'package:book_now/service/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
