@@ -1,4 +1,5 @@
 import 'package:book_now/components/custom_drawer.dart';
+import 'package:book_now/model/appointment.dart';
 import 'package:book_now/model/business.dart';
 import 'package:book_now/model/costumer.dart';
 import 'package:book_now/model/exception/business_already_exists_exception.dart';
@@ -40,7 +41,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
   late final TextEditingController _peoplePerAppointment;
   late final TextEditingController _slotsPerStartingTime;
   late final TextEditingController _price;
-  List<Room> hotelRooms = [];
+  final List<Room> _hotelRooms = [];
   late final TextEditingController _roomCapacity;
   late final TextEditingController _numberOfUnits;
   String errorMessage = '';
@@ -393,6 +394,12 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             Costumer? currentCostumer = await AuthService.getCurrentCostumer();
+                            Appointment appointmentSchedule = Appointment(
+                                int.tryParse(_minPerAppointment.text) ?? 0,
+                                int.tryParse(_peoplePerAppointment.text) ?? 0,
+                                int.tryParse(_slotsPerStartingTime.text) ?? 0,
+                                double.tryParse(_price.text) ?? 0,
+                            );
                             Location businessLocation = Location(
                                 _country.text,
                                 _city.text,
@@ -404,6 +411,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                                 businessLocation,
                                 _selectedStartTime,
                                 _selectedClosingTime,
+                                appointmentSchedule,//TODO tobe implemented
                                 {}, //TODO tobe implemented
                                 0,
                                 0,
@@ -490,10 +498,11 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              int roomCapacity = int.tryParse(_roomCapacity.text) ?? 0;
-                              int numberOfUnits = int.tryParse(_numberOfUnits.text) ?? 0;
-                              double pricePerNight = double.tryParse(_price.text) ?? 0;
-                              hotelRooms.add(Room(roomCapacity, numberOfUnits, numberOfUnits, pricePerNight));
+                              _hotelRooms.add(Room(
+                                  int.tryParse(_roomCapacity.text) ?? 0,
+                                  int.tryParse(_numberOfUnits.text) ?? 0,
+                                  double.tryParse(_price.text) ?? 0)
+                              );
 
                               _roomCapacity.clear();
                               _numberOfUnits.clear();
@@ -505,7 +514,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                       ),
                     ],
                   ),
-                if (hotelRooms.isNotEmpty && _selectedBusinessType == BusinessTypes.hotel) ...[
+                if (_hotelRooms.isNotEmpty && _selectedBusinessType == BusinessTypes.hotel) ...[
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -520,11 +529,11 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                       ),
                       ListView.builder(
                         shrinkWrap: true,
-                        itemCount: hotelRooms.length,
+                        itemCount: _hotelRooms.length,
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Text(
-                              '${hotelRooms[index].capacity} Bed -> Number of Units: ${hotelRooms[index].numberOfUnits}',
+                              '${_hotelRooms[index].capacity} Bed -> Number of Units: ${_hotelRooms[index].numberOfUnits}',
                               textAlign: TextAlign.start
                             ),
                           );
@@ -556,6 +565,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                                 businessLocation,
                                 _selectedStartTime,
                                 _selectedClosingTime,
+                                _hotelRooms,
                                 {}, //TODO tobe implemented
                                 0,
                                 0,

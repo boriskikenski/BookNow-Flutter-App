@@ -8,11 +8,17 @@ import './enumerations/business_types.dart';
 
 class Business {
   String businessName;
-  String ownerEmail; // TODO ova neka bide samo mail, zachuvaj novokreiran biznis vo listata na strana na Costumer
+  String ownerEmail;
   Location location;
   TimeOfDay openingTime;
   TimeOfDay closingTime;
-  Map<DateTime, List<Appointment>> appointments; //todo kreiraj za site dati do data za najdocna rezervacija i dovrshi go mesecot
+  Appointment appointment;
+  Map<DateTime, int> bookings;
+  /*
+  Map<DateTime, counter>
+  -> counter--, counter is numberOfSlots
+  -> mozhni DateTime soodvetno od Appointment i openingTime kje bidat def na FE
+  * */
   double reviewGrade;
   int reviewsSum;
   int reviewsCounter;
@@ -22,8 +28,9 @@ class Business {
   String encodedImage;
 
   Business(this.businessName, this.ownerEmail, this.location, this.openingTime,
-      this.closingTime, this.appointments, this.reviewGrade, this.reviewsSum,
-      this.reviewsCounter, this.reviews, this.filter, this.website, this.encodedImage);
+      this.closingTime, this.appointment, this.bookings, this.reviewGrade,
+      this.reviewsSum, this.reviewsCounter, this.reviews, this.filter,
+      this.website, this.encodedImage);
 
   Map<String, dynamic> toMap() {
     return {
@@ -32,7 +39,8 @@ class Business {
       'location': location.toMap(),
       'openingTime': '${openingTime.hour}:${openingTime.minute}',
       'closingTime': '${closingTime.hour}:${closingTime.minute}',
-      'appointments': _convertAppointmentsToMap(),
+      'appointment': appointment.toMap(),
+      'bookings': bookings,
       'reviewGrade': reviewGrade,
       'reviewsSum': reviewsSum,
       'reviewsCounter': reviewsCounter,
@@ -41,14 +49,6 @@ class Business {
       'website': website,
       'encodedImage': encodedImage,
     };
-  }
-
-  Map<String, dynamic> _convertAppointmentsToMap() {
-    Map<String, dynamic> appointmentsMap = {};
-    appointments.forEach((key, value) {
-      appointmentsMap[key.toString()] = value.map((appointment) => appointment.toMap()).toList();
-    });
-    return appointmentsMap;
   }
 
   factory Business.fromMap(Map<String, dynamic> map) {
@@ -64,7 +64,8 @@ class Business {
         hour: int.parse(map['closingTime'].split(':')[0]),
         minute: int.parse(map['closingTime'].split(':')[1]),
       ),
-      _convertMapToAppointments(map['appointments']),
+      Appointment.fromMap(map['appointment']),
+      Map<DateTime, int>.from(map['bookings']),
       map['reviewGrade'],
       map['reviewsSum'],
       map['reviewsCounter'],
@@ -73,14 +74,6 @@ class Business {
       map['website'],
       map['encodedImage'],
     );
-  }
-
-  static Map<DateTime, List<Appointment>> _convertMapToAppointments(Map<String, dynamic> map) {
-    Map<DateTime, List<Appointment>> appointmentsMap = {};
-    map.forEach((key, value) {
-      appointmentsMap[DateTime.parse(key)] = (value as List<dynamic>).map((e) => Appointment.fromMap(e)).toList();
-    });
-    return appointmentsMap;
   }
 
   Future<void> saveBusiness() async {

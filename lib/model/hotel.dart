@@ -13,7 +13,12 @@ class Hotel {
   Location location;
   TimeOfDay openingTime;
   TimeOfDay closingTime;
-  Map<DateTime, List<Room>> rooms;
+  List<Room> rooms;
+  Map<DateTime, Map<int, int>> bookings;
+  /*
+  Map<DateTime, Map<roomCapacity, counter>>
+  -> counter-- (counter kje bide numberOfUnits)
+  * */
   double reviewGrade;
   int reviewsSum;
   int reviewsCounter;
@@ -23,17 +28,19 @@ class Hotel {
   String encodedImage;
 
   Hotel(this.hotelName, this.ownerEmail, this.location, this.openingTime,
-      this.closingTime, this.rooms, this.reviewGrade, this.reviewsSum,
-      this.reviewsCounter, this.reviews, this.filter, this.website, this.encodedImage);
+      this.closingTime, this.rooms, this.bookings, this.reviewGrade,
+      this.reviewsSum, this.reviewsCounter, this.reviews, this.filter,
+      this.website, this.encodedImage);
 
   Map<String, dynamic> toMap() {
     return {
-      'businessName': hotelName,
+      'hotelName': hotelName,
       'ownerEmail': ownerEmail,
       'location': location.toMap(),
       'openingTime': '${openingTime.hour}:${openingTime.minute}',
       'closingTime': '${closingTime.hour}:${closingTime.minute}',
-      'rooms': _convertRoomsToMap(),
+      'rooms': rooms.map((room) => room.toMap()).toList(),
+      'bookings': bookings,
       'reviewGrade': reviewGrade,
       'reviewsSum': reviewsSum,
       'reviewsCounter': reviewsCounter,
@@ -46,7 +53,7 @@ class Hotel {
 
   static Hotel fromMap(Map<String, dynamic> map) {
     return Hotel(
-      map['businessName'],
+      map['hotelName'],
       map['ownerEmail'],
       Location.fromMap(map['location']),
       TimeOfDay(
@@ -57,7 +64,8 @@ class Hotel {
         hour: int.parse(map['closingTime'].split(':')[0]),
         minute: int.parse(map['closingTime'].split(':')[1]),
       ),
-      _convertMapToRooms(map['rooms']),
+      (map['rooms'] as List<dynamic>).map((room) => Room.fromMap(room)).toList(),
+      Map<DateTime, Map<int, int>>.from(map['bookings']),
       map['reviewGrade'],
       map['reviewsSum'],
       map['reviewsCounter'],
@@ -66,22 +74,6 @@ class Hotel {
       map['website'],
       map['encodedImage'],
     );
-  }
-
-  static Map<DateTime, List<Room>> _convertMapToRooms(Map<String, dynamic> map) {
-    Map<DateTime, List<Room>> roomsMap = {};
-    map.forEach((key, value) {
-      roomsMap[DateTime.parse(key)] = (value as List<dynamic>).map((e) => Room.fromMap(e)).toList();
-    });
-    return roomsMap;
-  }
-
-  Map<String, dynamic> _convertRoomsToMap() {
-    Map<String, dynamic> roomsMap = {};
-    rooms.forEach((key, value) {
-      roomsMap[key.toString()] = value.map((room) => room.toMap()).toList();
-    });
-    return roomsMap;
   }
 
   Future<void> saveHotel() async {
