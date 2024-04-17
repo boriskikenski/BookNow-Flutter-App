@@ -40,7 +40,7 @@ class Business {
       'openingTime': '${openingTime.hour}:${openingTime.minute}',
       'closingTime': '${closingTime.hour}:${closingTime.minute}',
       'appointment': appointment.toMap(),
-      'bookings': bookings,
+      'bookings': _convertDateTimeKeysToString(bookings),
       'reviewGrade': reviewGrade,
       'reviewsSum': reviewsSum,
       'reviewsCounter': reviewsCounter,
@@ -65,7 +65,7 @@ class Business {
         minute: int.parse(map['closingTime'].split(':')[1]),
       ),
       Appointment.fromMap(map['appointment']),
-      Map<DateTime, int>.from(map['bookings']),
+      _convertStringKeysToDateTime(Map<String, int>.from(map['bookings'])),
       map['reviewGrade'],
       map['reviewsSum'],
       map['reviewsCounter'],
@@ -97,7 +97,7 @@ class Business {
     return businesses;
   }
 
-  Future<Business?> findByName(String businessName) async {
+  static Future<Business?> findByName(String businessName) async {
     final businessSnapshot = await FirebaseFirestore.instance
         .collection('businesses')
         .doc(businessName)
@@ -110,5 +110,29 @@ class Business {
       }
     }
     return null;
+  }
+
+  Future<void> updateBookings(Map<DateTime, int> updatedBookings) async {
+    Map<String, int> bookingsStringKeys = _convertDateTimeKeysToString(updatedBookings);
+    await FirebaseFirestore.instance
+        .collection('businesses')
+        .doc(businessName)
+        .update({'bookings': bookingsStringKeys});
+  }
+
+  static Map<String, int> _convertDateTimeKeysToString(Map<DateTime, int> dateTimeMap) {
+    Map<String, int> stringKeysMap = {};
+    dateTimeMap.forEach((key, value) {
+      stringKeysMap[key.toIso8601String()] = value;
+    });
+    return stringKeysMap;
+  }
+
+  static Map<DateTime, int> _convertStringKeysToDateTime(Map<String, int> stringKeysMap) {
+    Map<DateTime, int> dateTimeMap = {};
+    stringKeysMap.forEach((key, value) {
+      dateTimeMap[DateTime.parse(key)] = value;
+    });
+    return dateTimeMap;
   }
 }

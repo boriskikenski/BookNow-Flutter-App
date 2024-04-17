@@ -1,6 +1,9 @@
 import 'package:book_now/model/business.dart';
 import 'package:book_now/model/dto/home_screen_dto.dart';
+import 'package:book_now/model/dto/select_date_screen_dto.dart';
+import 'package:book_now/model/enumerations/business_types.dart';
 import 'package:book_now/model/hotel.dart';
+import 'package:flutter/material.dart';
 
 class BHService {
 
@@ -32,5 +35,22 @@ class BHService {
       );
     }
     return homeScreenItems;
+  }
+
+  static Future<SelectDateScreenDTO> getBusinessAvailability(
+      String businessName) async {
+    SelectDateScreenDTO selectDateScreenDTO;
+    Business? business = await Business.findByName(businessName);
+
+    selectDateScreenDTO = SelectDateScreenDTO(
+        name: business?.businessName ?? '',
+        price: business?.appointment.pricePerAppointment ?? 0,
+        openingTime: business?.openingTime ?? TimeOfDay.now(),
+        closingTime: business?.closingTime ?? TimeOfDay.now(),
+        minPerSlot: business?.appointment.minPerSlot ?? 0,
+        businessBookings: business?.bookings ?? {},
+        numberOfSlots:  business?.appointment.numberOfSlots ?? 0,
+    );
+    return selectDateScreenDTO;
   }
 }

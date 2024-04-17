@@ -97,7 +97,7 @@ class Hotel {
     return hotels;
   }
 
-  Future<Hotel?> findByName(String hotelName) async {
+  static Future<Hotel?> findByName(String hotelName) async {
     final hotelSnapshot = await FirebaseFirestore.instance
         .collection('hotels')
         .doc(hotelName)

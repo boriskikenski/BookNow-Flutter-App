@@ -1,4 +1,6 @@
 import 'package:book_now/model/dto/home_screen_dto.dart';
+import 'package:book_now/model/dto/select_date_screen_dto.dart';
+import 'package:book_now/screens/select_date_screen.dart';
 import 'package:book_now/service/business_hotel_service.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_app_bar.dart';
@@ -186,8 +188,19 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {
-                                    // TODO to be implemented
+                                  onPressed: () async {
+                                    //todo tuka kreiraj drugo dto shto kje se prakja za naredna strana
+                                    if (items[index].filter == BusinessTypes.hotel) {
+                                      //todo SelectRoomTypeScreen
+                                    } else {
+                                      SelectDateScreenDTO business = await BHService.getBusinessAvailability(items[index].name);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SelectDateScreen(business: business),
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: const Text('BookNow'),
                                 ),
