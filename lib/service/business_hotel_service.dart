@@ -1,7 +1,7 @@
 import 'package:book_now/model/business.dart';
 import 'package:book_now/model/dto/home_screen_dto.dart';
-import 'package:book_now/model/dto/select_date_screen_dto.dart';
-import 'package:book_now/model/enumerations/business_types.dart';
+import 'package:book_now/model/dto/business_checkout_dto.dart';
+import 'package:book_now/model/dto/hotel_checkout_dto.dart';
 import 'package:book_now/model/hotel.dart';
 import 'package:flutter/material.dart';
 
@@ -37,20 +37,34 @@ class BHService {
     return homeScreenItems;
   }
 
-  static Future<SelectDateScreenDTO> getBusinessAvailability(
+  static Future<BusinessCheckoutDTO> getBusinessAvailability(
       String businessName) async {
-    SelectDateScreenDTO selectDateScreenDTO;
+    BusinessCheckoutDTO businessCheckoutDTO;
     Business? business = await Business.findByName(businessName);
 
-    selectDateScreenDTO = SelectDateScreenDTO(
-        name: business?.businessName ?? '',
-        price: business?.appointment.pricePerAppointment ?? 0,
-        openingTime: business?.openingTime ?? TimeOfDay.now(),
-        closingTime: business?.closingTime ?? TimeOfDay.now(),
-        minPerSlot: business?.appointment.minPerSlot ?? 0,
-        businessBookings: business?.bookings ?? {},
-        numberOfSlots:  business?.appointment.numberOfSlots ?? 0,
+    businessCheckoutDTO = BusinessCheckoutDTO(
+      business?.businessName ?? '',
+      business?.appointment.pricePerAppointment ?? 0,
+      business?.openingTime ?? TimeOfDay.now(),
+      business?.closingTime ?? TimeOfDay.now(),
+      business?.appointment.minPerSlot ?? 0,
+      business?.appointment.numberOfSlots ?? 0,
+      business?.bookings ?? {},
     );
-    return selectDateScreenDTO;
+    return businessCheckoutDTO;
+  }
+
+  static Future<HotelCheckoutDTO> getHotelAvailability(String hotelName) async {
+    HotelCheckoutDTO hotelCheckoutDTO;
+    Hotel? hotel = await Hotel.findByName(hotelName);
+
+    hotelCheckoutDTO = HotelCheckoutDTO(
+      hotel?.hotelName ?? '',
+      hotel?.rooms ?? [],
+      hotel?.bookings ?? {},
+      hotel?.openingTime ?? TimeOfDay.now(),
+      hotel?.closingTime ?? TimeOfDay.now(),
+    );
+    return hotelCheckoutDTO;
   }
 }

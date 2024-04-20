@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -14,11 +16,7 @@ class Hotel {
   TimeOfDay openingTime;
   TimeOfDay closingTime;
   List<Room> rooms;
-  Map<DateTime, Map<int, int>> bookings;
-  /*
-  Map<DateTime, Map<roomCapacity, counter>>
-  -> counter-- (counter kje bide numberOfUnits)
-  * */
+  Map<int, Map<DateTime, int>> bookings;
   double reviewGrade;
   int reviewsSum;
   int reviewsCounter;
@@ -40,7 +38,7 @@ class Hotel {
       'openingTime': '${openingTime.hour}:${openingTime.minute}',
       'closingTime': '${closingTime.hour}:${closingTime.minute}',
       'rooms': rooms.map((room) => room.toMap()).toList(),
-      'bookings': bookings,
+      'bookings': _bookingsToString(bookings),
       'reviewGrade': reviewGrade,
       'reviewsSum': reviewsSum,
       'reviewsCounter': reviewsCounter,
@@ -65,7 +63,7 @@ class Hotel {
         minute: int.parse(map['closingTime'].split(':')[1]),
       ),
       (map['rooms'] as List<dynamic>).map((room) => Room.fromMap(room)).toList(),
-      Map<DateTime, Map<int, int>>.from(map['bookings']),
+      _stringToBookings(map['bookings']),
       map['reviewGrade'],
       map['reviewsSum'],
       map['reviewsCounter'],
@@ -110,5 +108,48 @@ class Hotel {
       }
     }
     return null;
+  }
+
+  Future<void> updateBookings(Map<int, Map<DateTime, int>> updatedBookings) async {
+    String bookingsStringKeys = _bookingsToString(updatedBookings);
+    await FirebaseFirestore.instance
+        .collection('hotels')
+        .doc(hotelName)
+        .update({'bookings': bookingsStringKeys});
+  }
+
+  String _bookingsToString(Map<int, Map<DateTime, int>> bookings) {
+    List<Map<String, dynamic>> jsonList = [];
+    bookings.forEach((roomCapacity, dateMap) {
+      List<Map<String, dynamic>> roomList = [];
+      dateMap.forEach((roomDate, availableUnits) {
+        roomList.add({
+          "date": roomDate.toIso8601String(),
+          "availableUnits": availableUnits,
+        });
+      });
+      jsonList.add({
+        "roomCapacity": roomCapacity,
+        "roomsMap": roomList,
+      });
+    });
+    return jsonEncode(jsonList);
+  }
+
+  static Map<int, Map<DateTime, int>> _stringToBookings(String json) {
+    List<dynamic> jsonList = jsonDecode(json);
+    Map<int, Map<DateTime, int>> bookings = {};
+    jsonList.forEach((entry) {
+      int roomCapacity = entry['roomCapacity'];
+      List<dynamic> roomList = entry['roomsMap'];
+      Map<DateTime, int> dateMap = {};
+      roomList.forEach((roomEntry) {
+        DateTime date = DateTime.parse(roomEntry['date']);
+        int availableUnits = roomEntry['availableUnits'];
+        dateMap[date] = availableUnits;
+      });
+      bookings[roomCapacity] = dateMap;
+    });
+    return bookings;
   }
 }

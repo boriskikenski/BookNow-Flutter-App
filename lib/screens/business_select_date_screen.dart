@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
-import 'package:book_now/model/dto/select_date_screen_dto.dart';
+import 'package:book_now/model/dto/business_checkout_dto.dart';
 
-class SelectDateScreen extends StatefulWidget {
-  final SelectDateScreenDTO business;
+class BusinessSelectDateScreen extends StatefulWidget {
+  final BusinessCheckoutDTO business;
 
-  const SelectDateScreen({super.key, required this.business});
+  const BusinessSelectDateScreen({super.key, required this.business});
 
   @override
-  State<SelectDateScreen> createState() => _SelectDateScreenState();
+  State<BusinessSelectDateScreen> createState() => _BusinessSelectDateScreenState();
 }
 
-class _SelectDateScreenState extends State<SelectDateScreen> {
+class _BusinessSelectDateScreenState extends State<BusinessSelectDateScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -110,13 +110,13 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
           child: ElevatedButton(
             onPressed: () async {
               Business? business = await Business.findByName(widget.business.name);
-              Map<DateTime, int> updatedBookings = widget.business.businessBookings ?? {};
+              Map<DateTime, int> updatedBookings = widget.business.businessBookings;
               if (updatedBookings.containsKey(appointmentTime)){
                 updatedBookings[appointmentTime] = updatedBookings[appointmentTime] !- 1;
               } else {
                 updatedBookings[appointmentTime] = widget.business.numberOfSlots - 1;
               }
-              business!.updateBookings(updatedBookings);
+              await business!.updateBookings(updatedBookings);
               Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
@@ -132,7 +132,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  List<DateTime> getAvailableAppointments(DateTime selectedDay, SelectDateScreenDTO businessData) {
+  List<DateTime> getAvailableAppointments(DateTime selectedDay, BusinessCheckoutDTO businessData) {
     List<DateTime> appointments = [];
 
     DateTime openingTime = DateTime(selectedDay.year, selectedDay.month, selectedDay.day, businessData.openingTime.hour, businessData.openingTime.minute);
@@ -140,9 +140,9 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
 
     DateTime workingTime = openingTime;
     while (workingTime.isBefore(closingTime)) {
-      if (!businessData.businessBookings!.containsKey(workingTime)) {
+      if (!businessData.businessBookings.containsKey(workingTime)) {
         appointments.add(workingTime);
-      } else if (businessData.businessBookings!.containsKey(workingTime) && businessData.businessBookings![workingTime]! > 0){
+      } else if (businessData.businessBookings.containsKey(workingTime) && businessData.businessBookings[workingTime]! > 0){
         appointments.add(workingTime);
       }
       workingTime = workingTime.add(Duration(minutes: businessData.minPerSlot));

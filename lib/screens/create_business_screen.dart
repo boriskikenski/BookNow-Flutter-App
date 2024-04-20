@@ -97,7 +97,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.only(top: 70.0, left: 40.0, right: 40.0), // Adjust horizontal padding
+            padding: const EdgeInsets.only(top: 70.0, left: 40.0, right: 40.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
