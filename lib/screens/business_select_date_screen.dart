@@ -5,6 +5,8 @@ import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
 import 'package:book_now/model/dto/business_checkout_dto.dart';
 
+import '../service/payment_service.dart';
+
 class BusinessSelectDateScreen extends StatefulWidget {
   final BusinessCheckoutDTO business;
 
@@ -16,6 +18,7 @@ class BusinessSelectDateScreen extends StatefulWidget {
 
 class _BusinessSelectDateScreenState extends State<BusinessSelectDateScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Map<String, dynamic>? paymentIntent;
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
@@ -109,6 +112,8 @@ class _BusinessSelectDateScreenState extends State<BusinessSelectDateScreen> {
           padding: const EdgeInsets.only(right: 10.0),
           child: ElevatedButton(
             onPressed: () async {
+              PaymentService paymentService = PaymentService();
+              paymentService.makePayment(context, paymentIntent, widget.business.price.toInt());
               Business? business = await Business.findByName(widget.business.name);
               Map<DateTime, int> updatedBookings = widget.business.businessBookings;
               if (updatedBookings.containsKey(appointmentTime)){
@@ -117,7 +122,6 @@ class _BusinessSelectDateScreenState extends State<BusinessSelectDateScreen> {
                 updatedBookings[appointmentTime] = widget.business.numberOfSlots - 1;
               }
               await business!.updateBookings(updatedBookings);
-              Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.yellow,
@@ -150,5 +154,4 @@ class _BusinessSelectDateScreenState extends State<BusinessSelectDateScreen> {
 
     return appointments;
   }
-
 }

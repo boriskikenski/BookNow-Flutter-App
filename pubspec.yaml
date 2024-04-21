@@ -41,6 +41,8 @@ dependencies:
   firebase_analytics: ^10.8.10
   image_picker: ^0.8.4+1
   table_calendar: ^3.0.0
+  flutter_stripe: ^7.0.0
+  http: ^1.1.2
 
 dev_dependencies:
   flutter_test:

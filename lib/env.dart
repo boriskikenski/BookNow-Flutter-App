@@ -1,0 +1,2 @@
+const publishableKey = '';
+const secretKey = '';

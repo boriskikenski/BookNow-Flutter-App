@@ -6,6 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
 import '../model/room.dart';
+import '../service/payment_service.dart';
 
 class HotelSelectDateScreen extends StatefulWidget {
   final HotelCheckoutDTO hotel;
@@ -18,6 +19,7 @@ class HotelSelectDateScreen extends StatefulWidget {
 
 class _HotelSelectDateScreenState extends State<HotelSelectDateScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Map<String, dynamic>? paymentIntent;
   int _selectedRoomCapacity = 0;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   final List<DateTime> _selectedDates = [];
@@ -122,6 +124,8 @@ class _HotelSelectDateScreenState extends State<HotelSelectDateScreen> {
                             Map<int, Map<DateTime, int>> updatedBookings = widget.hotel.bookings;
                             DateTime start = _selectedDates[0];
                             DateTime end = _selectedDates[1].add(const Duration(days: 1));
+                            PaymentService paymentService = PaymentService();
+                            paymentService.makePayment(context, paymentIntent, _calculateBill());
                             Map<DateTime, int> dateAvailability = {};
                             if (!updatedBookings.containsKey(_selectedRoomCapacity)) {
                               for (DateTime date = start; date.isBefore(end); date = date.add(const Duration(days: 1))) {
@@ -144,7 +148,6 @@ class _HotelSelectDateScreenState extends State<HotelSelectDateScreen> {
                       )
                     ],
                   ),
-                  //todo prikazhi kopche koe kje vode do sledna strana za plakjanje
                 if (_selectedDates.isNotEmpty && !_canCheckout) //todo prikazhi info deka za izbranoto vreme ne e slobodno, mozhe i da se napisht koi denovi ne e slobodno
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -189,5 +192,11 @@ class _HotelSelectDateScreenState extends State<HotelSelectDateScreen> {
       }
     }
     return selectedRoom;
+  }
+
+  int _calculateBill() {
+    int pricePerNight = _getSelectedRoom(_selectedRoomCapacity)!.pricePerNight.toInt();
+    int nights = _selectedDates[1].difference(_selectedDates[0]).inDays + 1;
+    return nights * pricePerNight;
   }
 }
