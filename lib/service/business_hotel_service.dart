@@ -2,6 +2,7 @@ import 'package:book_now/model/business.dart';
 import 'package:book_now/model/dto/home_screen_dto.dart';
 import 'package:book_now/model/dto/business_checkout_dto.dart';
 import 'package:book_now/model/dto/hotel_checkout_dto.dart';
+import 'package:book_now/model/enumerations/business_types.dart';
 import 'package:book_now/model/hotel.dart';
 import 'package:flutter/material.dart';
 
@@ -50,6 +51,7 @@ class BHService {
       business?.appointment.minPerSlot ?? 0,
       business?.appointment.numberOfSlots ?? 0,
       business?.bookings ?? {},
+      business?.filter ?? BusinessTypes.gym,
     );
     return businessCheckoutDTO;
   }

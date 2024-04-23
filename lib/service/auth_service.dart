@@ -26,7 +26,7 @@ class AuthService {
       costumer.fullName,
       costumer.username,
       costumer.email,
-      [], [], [],
+      [], [],
     );
     c.saveCostumer();
   }

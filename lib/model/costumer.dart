@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import './reservation.dart';
 
 class Costumer {
   String fullName;
@@ -7,10 +6,9 @@ class Costumer {
   String email;
   List<String> hotelList;
   List<String> businessList;
-  List<Reservation> reservationList; //TODO probably -> List<String>
 
-  Costumer(this.fullName, this.username, this.email, this.hotelList, this.businessList,
-      this.reservationList);
+  Costumer(this.fullName, this.username, this.email, this.hotelList,
+      this.businessList);
 
   Map<String, dynamic> toMap() {
     return {
@@ -19,7 +17,6 @@ class Costumer {
       'email': email,
       'hotelList': hotelList,
       'businessList': businessList,
-      'reservationList': [], //TODO tobe implemented
     };
   }
 
@@ -30,7 +27,6 @@ class Costumer {
       map['email'],
       List<String>.from(map['hotelList']),
       List<String>.from(map['businessList']),
-      [], //TODO tobe implemented
     );
   }
 

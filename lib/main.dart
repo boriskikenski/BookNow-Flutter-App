@@ -5,7 +5,6 @@ import 'package:book_now/screens/login_screen.dart';
 import 'package:book_now/screens/my_businesses_screen.dart';
 import 'package:book_now/screens/profile_screen.dart';
 import 'package:book_now/screens/register_screen.dart';
-import 'package:book_now/screens/reservation_details_screen.dart';
 import 'package:book_now/screens/reservations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -34,7 +33,6 @@ class MyApp extends StatelessWidget {
         '/profile/': (BuildContext context) => const ProfileScreen(),
         '/reservations/': (BuildContext context) => const ReservationsScreen(),
         '/my-businesses/': (BuildContext context) => const BusinessesScreen(),
-        '/reservation-details/': (BuildContext context) => const ReservationDetailsScreen(),
       },
     );
   }

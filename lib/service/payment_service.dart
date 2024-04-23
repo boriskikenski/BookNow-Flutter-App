@@ -17,7 +17,7 @@ class PaymentService {
               merchantDisplayName: 'Boris'))
           .then((value) {});
 
-      displayPaymentSheet(context, paymentIntent);
+      await displayPaymentSheet(context, paymentIntent);
     } catch (e) {
       rethrow;
     }
@@ -26,42 +26,14 @@ class PaymentService {
   displayPaymentSheet(BuildContext context, Map<String, dynamic>? paymentIntent) async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) {
-        Navigator.pushNamedAndRemoveUntil(context, '/reservation-details/', (route) => false);
-        showDialog(
-            context: context,
-            builder: (_) => const AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-                      Text("Successful booking"),
-                    ],
-                  ),
-                ],
-              ),
-            ));
-
         paymentIntent = null;
       }).onError((error, stackTrace) {
-        // ignore: avoid_print
-        print('Error is:--->$error $stackTrace');
+        throw Exception();
       });
     } on StripeException catch (e) {
-      // ignore: avoid_print
-      print('Error is:---> $e');
-      showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-            content: Text("Cancelled "),
-          ));
+      rethrow;
     } catch (e) {
-      print('$e');
+      rethrow;
     }
   }
 
@@ -85,8 +57,7 @@ class PaymentService {
       print('Payment Intent Body->>> ${response.body.toString()}');
       return jsonDecode(response.body);
     } catch (err) {
-      // ignore: avoid_print
-      print('err charging user: ${err.toString()}');
+      rethrow;
     }
   }
 

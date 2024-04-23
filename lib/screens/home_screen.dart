@@ -1,8 +1,9 @@
 import 'package:book_now/model/dto/home_screen_dto.dart';
 import 'package:book_now/model/dto/business_checkout_dto.dart';
 import 'package:book_now/model/dto/hotel_checkout_dto.dart';
-import 'package:book_now/screens/business_select_date_screen.dart';
-import 'package:book_now/screens/hotel_select_date_screen.dart';
+import 'package:book_now/screens/business_checkout_screen.dart';
+import 'package:book_now/screens/hotel_checkout_screen.dart';
+import 'package:book_now/screens/qr_code_scanner.dart';
 import 'package:book_now/service/business_hotel_service.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_app_bar.dart';
@@ -179,7 +180,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    // TODO to be implemented
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const QRScanScreen(),
+                                      ),
+                                    );
                                   },
                                   child: const Text('More Details'),
                                 ),
@@ -196,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => HotelSelectDateScreen(hotel: hotel),
+                                          builder: (context) => HotelCheckoutScreen(hotel: hotel),
                                         ),
                                       );
                                     } else {
@@ -204,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => BusinessSelectDateScreen(business: business),
+                                          builder: (context) => BusinessCheckoutScreen(business: business),
                                         ),
                                       );
                                     }
