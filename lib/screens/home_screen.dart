@@ -2,13 +2,15 @@ import 'package:book_now/model/dto/home_screen_dto.dart';
 import 'package:book_now/model/dto/business_checkout_dto.dart';
 import 'package:book_now/model/dto/hotel_checkout_dto.dart';
 import 'package:book_now/screens/business_checkout_screen.dart';
+import 'package:book_now/screens/business_screen.dart';
 import 'package:book_now/screens/hotel_checkout_screen.dart';
-import 'package:book_now/screens/qr_code_scanner.dart';
 import 'package:book_now/service/business_hotel_service.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
+import '../model/business.dart';
 import '../model/enumerations/business_types.dart';
+import '../model/hotel.dart';
 import '../service/image_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -179,13 +181,21 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const QRScanScreen(),
-                                      ),
-                                    );
+                                  onPressed: () async {
+                                    if (items[index].filter == BusinessTypes.hotel) {
+                                      Hotel? hotel = await Hotel.findByName(items[index].name);
+                                      //TODO
+                                    } else {
+                                      Business? business = await Business.findByName(items[index].name);
+                                      if (business != null) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => BusinessScreen(business: business),
+                                          ),
+                                        );
+                                      }
+                                    }
                                   },
                                   child: const Text('More Details'),
                                 ),
@@ -198,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ElevatedButton(
                                   onPressed: () async {
                                     if (items[index].filter == BusinessTypes.hotel) {
-                                      HotelCheckoutDTO hotel = await BHService.getHotelAvailability(items[index].name);
+                                      HotelCheckoutDTO hotel = await BHService.getHotelCheckoutDTO(items[index].name);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -206,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     } else {
-                                      BusinessCheckoutDTO business = await BHService.getBusinessAvailability(items[index].name);
+                                      BusinessCheckoutDTO business = await BHService.getBusinessCheckoutDTO(items[index].name);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

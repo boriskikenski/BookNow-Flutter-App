@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
 
-class MyBusinessesScreen extends StatefulWidget {
-  const MyBusinessesScreen({super.key});
+class HotelScreen extends StatefulWidget {
+
+  const HotelScreen({super.key});
 
   @override
-  State<MyBusinessesScreen> createState() => _MyBusinessesScreenState();
+  State<HotelScreen> createState() => _HotelScreenState();
 }
 
-class _MyBusinessesScreenState extends State<MyBusinessesScreen> {
+class _HotelScreenState extends State<HotelScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -25,7 +26,7 @@ class _MyBusinessesScreenState extends State<MyBusinessesScreen> {
         },
       ),
       body: Center(
-        child: const Text('Business screen - TO BE IMPLEMENTED')
+          child: const Text('Hotel screen - TO BE IMPLEMENTED')
       ),
       drawer: const CustomDrawer(),
     );

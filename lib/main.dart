@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         '/create-business/': (BuildContext context) => const CreateBusinessScreen(),
         '/profile/': (BuildContext context) => const ProfileScreen(),
         '/reservations/': (BuildContext context) => const ReservationsScreen(),
-        '/my-businesses/': (BuildContext context) => const BusinessesScreen(),
+        '/my-businesses/': (BuildContext context) => const MyBusinessesScreen(),
       },
     );
   }

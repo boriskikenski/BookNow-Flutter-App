@@ -1,16 +1,14 @@
-import 'package:book_now/model/costumer.dart';
-
 class Review {
-  Costumer reviewer;
+  String reviewerEmail;
   int grade;
   String comment;
   DateTime date;
 
-  Review(this.reviewer, this.grade, this.comment, this.date);
+  Review(this.reviewerEmail, this.grade, this.comment, this.date);
 
   Map<String, dynamic> toMap() {
     return {
-      'reviewer': reviewer.toMap(),
+      'reviewerEmail': reviewerEmail,
       'grade': grade,
       'comment': comment,
       'date': date.toIso8601String(),
@@ -19,7 +17,7 @@ class Review {
 
   static Review fromMap(Map<String, dynamic> map) {
     return Review(
-      Costumer.fromMap(map['reviewer']),
+      map['reviewerEmail'],
       map['grade'],
       map['comment'],
       DateTime.parse(map['date']),

@@ -14,11 +14,6 @@ class Business {
   TimeOfDay closingTime;
   Appointment appointment;
   Map<DateTime, int> bookings;
-  /*
-  Map<DateTime, counter>
-  -> counter--, counter is numberOfSlots
-  -> mozhni DateTime soodvetno od Appointment i openingTime kje bidat def na FE
-  * */
   double reviewGrade;
   int reviewsSum;
   int reviewsCounter;
@@ -119,6 +114,14 @@ class Business {
         .doc(businessName)
         .update({'bookings': bookingsStringKeys});
   }
+
+  static Future<void> updateBusiness(Business updatedBusiness) async {
+    await FirebaseFirestore.instance
+        .collection('businesses')
+        .doc(updatedBusiness.businessName)
+        .update(updatedBusiness.toMap());
+  }
+
 
   static Map<String, int> _convertDateTimeKeysToString(Map<DateTime, int> dateTimeMap) {
     Map<String, int> stringKeysMap = {};

@@ -38,10 +38,15 @@ class BHService {
     return homeScreenItems;
   }
 
-  static Future<BusinessCheckoutDTO> getBusinessAvailability(
-      String businessName) async {
+  static Future<BusinessCheckoutDTO> getBusinessCheckoutDTO(
+      String businessName, {Business? businessEntity}) async {
     BusinessCheckoutDTO businessCheckoutDTO;
-    Business? business = await Business.findByName(businessName);
+    Business? business;
+    if (businessEntity != null) {
+      business = businessEntity;
+    } else {
+      business = await Business.findByName(businessName);
+    }
 
     businessCheckoutDTO = BusinessCheckoutDTO(
       business?.businessName ?? '',
@@ -56,7 +61,7 @@ class BHService {
     return businessCheckoutDTO;
   }
 
-  static Future<HotelCheckoutDTO> getHotelAvailability(String hotelName) async {
+  static Future<HotelCheckoutDTO> getHotelCheckoutDTO(String hotelName) async {
     HotelCheckoutDTO hotelCheckoutDTO;
     Hotel? hotel = await Hotel.findByName(hotelName);
 
