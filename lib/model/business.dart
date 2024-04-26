@@ -122,7 +122,6 @@ class Business {
         .update(updatedBusiness.toMap());
   }
 
-
   static Map<String, int> _convertDateTimeKeysToString(Map<DateTime, int> dateTimeMap) {
     Map<String, int> stringKeysMap = {};
     dateTimeMap.forEach((key, value) {

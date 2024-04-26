@@ -61,9 +61,15 @@ class BHService {
     return businessCheckoutDTO;
   }
 
-  static Future<HotelCheckoutDTO> getHotelCheckoutDTO(String hotelName) async {
+  static Future<HotelCheckoutDTO> getHotelCheckoutDTO(String hotelName,
+      {Hotel? hotelEntity}) async {
     HotelCheckoutDTO hotelCheckoutDTO;
     Hotel? hotel = await Hotel.findByName(hotelName);
+    if (hotelEntity != null) {
+      hotel = hotelEntity;
+    } else {
+      hotel = await Hotel.findByName(hotelName);
+    }
 
     hotelCheckoutDTO = HotelCheckoutDTO(
       hotel?.hotelName ?? '',

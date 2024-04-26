@@ -118,6 +118,13 @@ class Hotel {
         .update({'bookings': bookingsStringKeys});
   }
 
+  static Future<void> updateHotel(Hotel updatedHotel) async {
+    await FirebaseFirestore.instance
+        .collection('hotels')
+        .doc(updatedHotel.hotelName)
+        .update(updatedHotel.toMap());
+  }
+
   String _bookingsToString(Map<int, Map<DateTime, int>> bookings) {
     List<Map<String, dynamic>> jsonList = [];
     bookings.forEach((roomCapacity, dateMap) {
