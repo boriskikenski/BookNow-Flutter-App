@@ -68,11 +68,19 @@ class _HotelCheckoutScreenState extends State<HotelCheckoutScreen> {
               ),
             if (_selectedRoomCapacity > 0)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Selected Business: ${widget.hotel.name}, Room capacity: $_selectedRoomCapacity', //TODO stavi price
+                      widget.hotel.name,
+                      style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Price per night: ${_getSelectedRoom(_selectedRoomCapacity)!.pricePerNight.toString()}',
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -96,6 +104,9 @@ class _HotelCheckoutScreenState extends State<HotelCheckoutScreen> {
                     },
                     onDaySelected: (selectedDay, focusedDay) {
                       setState(() {
+                        if (selectedDay.isBefore(DateTime.now())) {
+                          return;
+                        }
                         if (_selectedDates.length == 2) {
                           _selectedDates.clear();
                           _canCheckout = false;
@@ -214,13 +225,36 @@ class _HotelCheckoutScreenState extends State<HotelCheckoutScreen> {
                         )
                       ],
                     ),
-                  if (_selectedDates.isNotEmpty && !_canCheckout) //todo prikazhi info deka za izbranoto vreme ne e slobodno, mozhe i da se napisht koi denovi ne e slobodno
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Selected Dates: ${_selectedDates[0].toString()} - ${_selectedDates[_selectedDates.length - 1].toString()}',
-                        style: const TextStyle(fontSize: 16),
-                      ),
+                  if (_selectedDates.isNotEmpty && !_canCheckout)
+                    Column(
+                      children: [
+                        const Center(
+                          child: Text(
+                            'Selected Dates are not available',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        const Center(
+                          child: Text(
+                            'Selected different dates',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const Center(
+                          child: Text(
+                            'or',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _selectedRoomCapacity = 0;
+                              });
+                            },
+                            child: const Text('Choose different room type')
+                        ),
+                      ],
                     ),
                 ],
               ),

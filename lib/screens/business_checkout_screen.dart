@@ -38,11 +38,19 @@ class _BusinessCheckoutScreenState extends State<BusinessCheckoutScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Selected Business: ${widget.business.name}, Price: ${widget.business.price}',
+                widget.business.name,
+                style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Price per appointment: ${widget.business.price} \$',
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -57,6 +65,9 @@ class _BusinessCheckoutScreenState extends State<BusinessCheckoutScreen> {
                 });
               },
               onDaySelected: (selectedDay, focusedDay) {
+                if (selectedDay.isBefore(DateTime.now())) {
+                  return;
+                }
                 _showTimeSlotBottomSheet(selectedDay, getAvailableAppointments(selectedDay, widget.business));
               },
             ),
