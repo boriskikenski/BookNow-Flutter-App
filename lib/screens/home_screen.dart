@@ -27,6 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
   BusinessTypes? _selectedBusinessType;
   String? _selectedBusinessLocation;
   final Set<String> _businessLocationList = {};
+  final List<String> _orderOptions = [
+    "Price: Low -> High", "Price: High -> Low",
+    "Rating: Low -> High", "Rating: High -> Low"
+  ];
+  String? _selectedOrderOption;
 
   @override
   void initState() {
@@ -79,9 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          //TODO to be implemented
+                          _showOrderDialog(context);
                         },
-                        child: const Text('Price'),
+                        child: const Text('Order'),
                       ),
                     ],
                   ),
@@ -110,6 +115,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     items = items
                         .where((item) => item.city == _selectedBusinessLocation)
                         .toList();
+                  }
+                  if(_selectedOrderOption != null && _selectedOrderOption == _orderOptions[0]) {
+                    items.sort((a, b) => a.price.compareTo(b.price));
+                  }
+                  if(_selectedOrderOption != null && _selectedOrderOption == _orderOptions[1]) {
+                    items.sort((a, b) => b.price.compareTo(a.price));
+                  }
+                  if(_selectedOrderOption != null && _selectedOrderOption == _orderOptions[2]) {
+                    items.sort((a, b) => a.reviewGrade.compareTo(b.reviewGrade));
+                  }
+                  if(_selectedOrderOption != null && _selectedOrderOption == _orderOptions[3]) {
+                    items.sort((a, b) => b.reviewGrade.compareTo(a.reviewGrade));
                   }
                   return ListView.builder(
                     itemCount: items.length,
@@ -317,6 +334,48 @@ class _HomeScreenState extends State<HomeScreen> {
                 ListTile(
                   title: const Text(
                     'Remove location filter',
+                    style: TextStyle(
+                        color: Colors.red
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBusinessLocation = null;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showOrderDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Order by:'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                ..._orderOptions.map((type) {
+                  return ListTile(
+                    title: Text(type),
+                    onTap: () {
+                      setState(() {
+                        _selectedOrderOption = type;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                }),
+                ListTile(
+                  title: const Text(
+                    'Remove order filter',
                     style: TextStyle(
                         color: Colors.red
                     ),

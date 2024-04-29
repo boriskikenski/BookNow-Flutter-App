@@ -21,7 +21,8 @@ class BHService {
           business.businessName,
           business.encodedImage,
           business.location.country,
-          business.location.city)
+          business.location.city,
+          business.appointment.pricePerAppointment)
       );
     }
     for (Hotel hotel in hotelList) {
@@ -32,7 +33,8 @@ class BHService {
           hotel.hotelName,
           hotel.encodedImage,
           hotel.location.country,
-          hotel.location.city)
+          hotel.location.city,
+          hotel.rooms[0].pricePerNight)
       );
     }
     return homeScreenItems;

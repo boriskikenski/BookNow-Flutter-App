@@ -8,7 +8,8 @@ class HomeScreenDTO {
   String encodedImage;
   String country;
   String city;
+  double price;
 
   HomeScreenDTO(this.filter, this.reviewGrade, this.reviewsCounter, this.name,
-      this.encodedImage, this.country,this.city);
+      this.encodedImage, this.country, this.city, this.price);
 }
