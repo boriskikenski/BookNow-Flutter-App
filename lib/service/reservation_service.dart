@@ -1,19 +1,16 @@
 import 'dart:convert';
 
 import 'package:book_now/model/business.dart';
-import 'package:book_now/model/costumer.dart';
 import 'package:book_now/model/hotel.dart';
 import 'package:book_now/model/hotel_reservation.dart';
 import 'package:book_now/model/reservation.dart';
+import 'package:book_now/model/dto/reservation_dto.dart';
 import 'package:crypto/crypto.dart';
 
 class ReservationService {
 
   static Future<String> createReservation (String currentCostumerEmail,
       String businessName, DateTime when) async {
-
-    Costumer? costumer = await Costumer.findByEmail(currentCostumerEmail);
-    String costumerFullName = costumer!.fullName;
 
     Business? business = await Business.findByName(businessName);
     String businessOwnerEmail = business!.ownerEmail;
@@ -23,7 +20,7 @@ class ReservationService {
 
     Reservation reservation = Reservation(
         qrGenerationString,
-        costumerFullName,
+        currentCostumerEmail,
         businessName,
         businessOwnerEmail,
         when
@@ -36,9 +33,6 @@ class ReservationService {
   static Future<String> createHotelReservation (String currentCostumerEmail,
       String hotelName, DateTime startDate, DateTime endDate, int roomCapacity) async {
 
-    Costumer? costumer = await Costumer.findByEmail(currentCostumerEmail);
-    String costumerFullName = costumer!.fullName;
-
     Hotel? hotel = await Hotel.findByName(hotelName);
     String hotelOwnerEmail = hotel!.ownerEmail;
 
@@ -48,7 +42,7 @@ class ReservationService {
 
     HotelReservation hotelReservation = HotelReservation(
         qrGenerationString,
-        costumerFullName,
+        currentCostumerEmail,
         hotelName,
         hotelOwnerEmail,
         startDate,
@@ -64,5 +58,30 @@ class ReservationService {
     var bytes = utf8.encode(input);
     var digest = sha256.convert(bytes);
     return digest.toString();
+  }
+
+  static Future<List<ReservationDTO>> getAllReservationsForCostumer(String ownerFullName) async {
+    List<ReservationDTO> allReservations = [];
+    List<Reservation> reservations = await Reservation.getAllReservationsForCostumer(ownerFullName);
+    List<HotelReservation> hotelReservations = await HotelReservation.getAllReservationsForCostumer(ownerFullName);
+
+    for (Reservation reservation in reservations) {
+      allReservations.add(ReservationDTO(
+          reservation.qrGenerationString,
+          reservation.reservationOwnerEmail,
+          reservation.businessName,
+          reservation.when)
+      );
+    }
+    for (HotelReservation reservation in hotelReservations) {
+      allReservations.add(ReservationDTO(
+          reservation.qrGenerationString,
+          reservation.reservationOwnerEmail,
+          reservation.businessName,
+          reservation.startDate)
+      );
+    }
+
+    return allReservations;
   }
 }

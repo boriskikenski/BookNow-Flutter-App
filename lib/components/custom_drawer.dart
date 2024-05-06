@@ -1,5 +1,9 @@
+import 'package:book_now/screens/reservations_screen.dart';
+import 'package:book_now/service/reservation_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../model/dto/reservation_dto.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -39,8 +43,15 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Reservations'),
-            onTap: () {
-              Navigator.pushNamed(context, '/reservations/');
+            onTap: () async {
+              String? currentUser = FirebaseAuth.instance.currentUser?.email ?? '';
+              List<ReservationDTO> reservations = await ReservationService.getAllReservationsForCostumer(currentUser);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReservationsScreen(reservations: reservations),
+                ),
+              );
             },
           ),
           ListTile(

@@ -5,7 +5,6 @@ import 'package:book_now/screens/login_screen.dart';
 import 'package:book_now/screens/my_businesses_screen.dart';
 import 'package:book_now/screens/profile_screen.dart';
 import 'package:book_now/screens/register_screen.dart';
-import 'package:book_now/screens/reservations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -31,7 +30,6 @@ class MyApp extends StatelessWidget {
         '/home/': (BuildContext context) => const HomeScreen(),
         '/create-business/': (BuildContext context) => const CreateBusinessScreen(),
         '/profile/': (BuildContext context) => const ProfileScreen(),
-        '/reservations/': (BuildContext context) => const ReservationsScreen(),
         '/my-businesses/': (BuildContext context) => const MyBusinessesScreen(),
       },
     );
