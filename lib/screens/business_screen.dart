@@ -1,3 +1,4 @@
+import 'package:book_now/model/costumer.dart';
 import 'package:book_now/model/review.dart';
 import 'package:book_now/screens/business_checkout_screen.dart';
 import 'package:book_now/service/business_hotel_service.dart';
@@ -30,7 +31,6 @@ class _BusinessScreenState extends State<BusinessScreen> {
   Color _starFourColor = Colors.yellow;
   Color _starFiveColor = Colors.yellow;
 
-
   @override
   void initState() {
     _reviewComment = TextEditingController();
@@ -42,6 +42,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
     _reviewComment.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +112,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 15.0),
               child: Text(
-                '${widget.business.openingTime.hour..toString()}:${widget.business.openingTime.minute.toString().toString()} - '
+                '${widget.business.openingTime.hour.toString()}:${widget.business.openingTime.minute.toString()} - '
                     '${widget.business.closingTime.hour.toString()}:${widget.business.closingTime.minute.toString()}',
                 style: const TextStyle(fontSize: 18),
               ),
@@ -294,12 +295,13 @@ class _BusinessScreenState extends State<BusinessScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   String? currentUserEmail = FirebaseAuth.instance.currentUser?.email ?? '';
+                  Costumer? reviewer = await Costumer.findByEmail(currentUserEmail);
                   Business updatedBusiness = widget.business;
                   updatedBusiness.reviewsSum += _numberOfStars;
                   updatedBusiness.reviewsCounter += 1;
                   updatedBusiness.reviewGrade = updatedBusiness.reviewsSum / updatedBusiness.reviewsCounter;
                   Review review = Review(
-                      currentUserEmail,
+                      reviewer!.username,
                       _numberOfStars,
                       _reviewComment.text,
                       DateTime.now()
@@ -324,6 +326,80 @@ class _BusinessScreenState extends State<BusinessScreen> {
                 ),
                 child: const Text('Submit review', style: TextStyle(fontSize: 16)),
               ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: Text(
+                  'Reviews:',
+                  style: TextStyle(fontSize: 22 , fontWeight: FontWeight.bold)
+              ),
+            ),
+
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.business.reviews.length,
+                  itemBuilder: (context, index) {
+                    final review = widget.business.reviews[index];
+                    return Card(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    review.reviewerUsername,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: Text(
+                                    '${review.date.day}.${review.date.month}.${review.date.year}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                              child: Text(
+                                review.comment,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  review.grade.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const Icon(Icons.star, size: 23, color: Colors.black)
+                              ],
+                            ),
+                          ],
+                        )
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),

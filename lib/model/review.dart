@@ -1,14 +1,14 @@
 class Review {
-  String reviewerEmail;
+  String reviewerUsername;
   int grade;
   String comment;
   DateTime date;
 
-  Review(this.reviewerEmail, this.grade, this.comment, this.date);
+  Review(this.reviewerUsername, this.grade, this.comment, this.date);
 
   Map<String, dynamic> toMap() {
     return {
-      'reviewerEmail': reviewerEmail,
+      'reviewerUsername': reviewerUsername,
       'grade': grade,
       'comment': comment,
       'date': date.toIso8601String(),
@@ -17,7 +17,7 @@ class Review {
 
   static Review fromMap(Map<String, dynamic> map) {
     return Review(
-      map['reviewerEmail'],
+      map['reviewerUsername'],
       map['grade'],
       map['comment'],
       DateTime.parse(map['date']),

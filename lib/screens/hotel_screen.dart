@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
+import '../model/costumer.dart';
 import '../model/review.dart';
 import '../service/business_hotel_service.dart';
 import '../service/image_service.dart';
@@ -287,12 +288,13 @@ class _HotelScreenState extends State<HotelScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   String? currentUserEmail = FirebaseAuth.instance.currentUser?.email ?? '';
+                  Costumer? reviewer = await Costumer.findByEmail(currentUserEmail);
                   Hotel updatedHotel = widget.hotel;
                   updatedHotel.reviewsSum += _numberOfStars;
                   updatedHotel.reviewsCounter += 1;
                   updatedHotel.reviewGrade = updatedHotel.reviewsSum / updatedHotel.reviewsCounter;
                   Review review = Review(
-                      currentUserEmail,
+                      reviewer!.username,
                       _numberOfStars,
                       _reviewComment.text,
                       DateTime.now()
@@ -317,6 +319,80 @@ class _HotelScreenState extends State<HotelScreen> {
                 ),
                 child: const Text('Submit review', style: TextStyle(fontSize: 16)),
               ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: Text(
+                  'Reviews:',
+                  style: TextStyle(fontSize: 22 , fontWeight: FontWeight.bold)
+              ),
+            ),
+
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.hotel.reviews.length,
+                  itemBuilder: (context, index) {
+                    final review = widget.hotel.reviews[index];
+                    return Card(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    review.reviewerUsername,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: Text(
+                                    '${review.date.day}.${review.date.month}.${review.date.year}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                              child: Text(
+                                review.comment,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  review.grade.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const Icon(Icons.star, size: 23, color: Colors.black)
+                              ],
+                            ),
+                          ],
+                        )
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
