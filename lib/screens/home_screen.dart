@@ -6,6 +6,7 @@ import 'package:book_now/screens/business_screen.dart';
 import 'package:book_now/screens/hotel_checkout_screen.dart';
 import 'package:book_now/screens/hotel_screen.dart';
 import 'package:book_now/service/business_hotel_service.dart';
+import 'package:book_now/service/favourites_service.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
@@ -202,21 +203,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onPressed: () async {
                                     if (items[index].filter == BusinessTypes.hotel) {
                                       Hotel? hotel = await Hotel.findByName(items[index].name);
+                                      bool isAlreadyFavourite = await FavouritesService.checkIsFavourite(
+                                          items[index].name,
+                                          items[index].filter
+                                      );
                                       if (hotel != null) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => HotelScreen(hotel: hotel),
+                                            builder: (context) => HotelScreen(
+                                              hotel: hotel,
+                                              isAlreadyFavourite: isAlreadyFavourite),
                                           ),
                                         );
                                       }
                                     } else {
                                       Business? business = await Business.findByName(items[index].name);
+                                      bool isAlreadyFavourite = await FavouritesService.checkIsFavourite(
+                                          items[index].name,
+                                          items[index].filter
+                                      );
                                       if (business != null) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => BusinessScreen(business: business),
+                                            builder: (context) => BusinessScreen(
+                                                business: business,
+                                                isAlreadyFavourite: isAlreadyFavourite
+                                            ),
                                           ),
                                         );
                                       }

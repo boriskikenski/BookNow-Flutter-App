@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../components/custom_app_bar.dart';
 import '../components/custom_drawer.dart';
 import '../model/costumer.dart';
+import '../model/favourites.dart';
 import '../model/review.dart';
 import '../service/business_hotel_service.dart';
 import '../service/image_service.dart';
@@ -14,7 +15,8 @@ import '../service/website_service.dart';
 
 class HotelScreen extends StatefulWidget {
   final Hotel hotel;
-  const HotelScreen({super.key, required this.hotel});
+  final bool isAlreadyFavourite;
+  const HotelScreen({super.key, required this.hotel, required this.isAlreadyFavourite});
 
   @override
   State<HotelScreen> createState() => _HotelScreenState();
@@ -29,11 +31,13 @@ class _HotelScreenState extends State<HotelScreen> {
   Color _starThreeColor = Colors.yellow;
   Color _starFourColor = Colors.yellow;
   Color _starFiveColor = Colors.yellow;
+  late bool _isFavourite;
 
 
   @override
   void initState() {
     _reviewComment = TextEditingController();
+    _isFavourite = widget.isAlreadyFavourite;
     super.initState();
   }
 
@@ -59,12 +63,37 @@ class _HotelScreenState extends State<HotelScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Text(
-                widget.hotel.hotelName,
-                style: const TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(
+                    widget.hotel.hotelName,
+                    style: const TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),
+                  ),
+                ),
+                if (_isFavourite)
+                  ElevatedButton(
+                    onPressed: () {
+                      Favourites.deleteFavourite(widget.hotel.hotelName, widget.hotel.filter);
+                      setState(() {
+                        _isFavourite = !_isFavourite;
+                      });
+                    },
+                    child: const Text('Remove from FAV'),
+                  ),
+                if (!_isFavourite)
+                  ElevatedButton(
+                    onPressed: () {
+                      Favourites.saveFavourite(widget.hotel.hotelName, widget.hotel.filter);
+                      setState(() {
+                        _isFavourite = !_isFavourite;
+                      });
+                    },
+                    child: const Text('Add to FAV'),
+                  ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 15.0),

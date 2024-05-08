@@ -1,4 +1,5 @@
 import 'package:book_now/model/costumer.dart';
+import 'package:book_now/model/favourites.dart';
 import 'package:book_now/model/review.dart';
 import 'package:book_now/screens/business_checkout_screen.dart';
 import 'package:book_now/service/business_hotel_service.dart';
@@ -14,8 +15,9 @@ import '../service/image_service.dart';
 
 class BusinessScreen extends StatefulWidget {
   final Business business;
+  final bool isAlreadyFavourite;
 
-  const BusinessScreen({super.key, required this.business});
+  const BusinessScreen({super.key, required this.business, required this.isAlreadyFavourite});
 
   @override
   State<BusinessScreen> createState() => _BusinessScreenState();
@@ -30,10 +32,12 @@ class _BusinessScreenState extends State<BusinessScreen> {
   Color _starThreeColor = Colors.yellow;
   Color _starFourColor = Colors.yellow;
   Color _starFiveColor = Colors.yellow;
+  late bool _isFavourite;
 
   @override
   void initState() {
     _reviewComment = TextEditingController();
+    _isFavourite = widget.isAlreadyFavourite;
     super.initState();
   }
 
@@ -59,12 +63,37 @@ class _BusinessScreenState extends State<BusinessScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Text(
-                widget.business.businessName,
-                style: const TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(
+                    widget.business.businessName,
+                    style: const TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),
+                  ),
+                ),
+                if (_isFavourite)
+                  ElevatedButton(
+                    onPressed: () {
+                      Favourites.deleteFavourite(widget.business.businessName, widget.business.filter);
+                      setState(() {
+                        _isFavourite = !_isFavourite;
+                      });
+                    },
+                    child: const Text('Remove from FAV'),
+                  ),
+                if (!_isFavourite)
+                  ElevatedButton(
+                    onPressed: () {
+                      Favourites.saveFavourite(widget.business.businessName, widget.business.filter);
+                      setState(() {
+                        _isFavourite = !_isFavourite;
+                      });
+                    },
+                    child: const Text('Add to FAV'),
+                  ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 15.0),
