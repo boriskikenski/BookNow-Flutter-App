@@ -1,3 +1,6 @@
+import 'package:book_now/model/costumer.dart';
+import 'package:book_now/model/favourites.dart';
+import 'package:book_now/screens/profile_screen.dart';
 import 'package:book_now/screens/reservations_screen.dart';
 import 'package:book_now/service/reservation_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,8 +40,19 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Profile'),
-            onTap: () {
-              Navigator.pushNamed(context, '/profile/');
+            onTap: () async {
+              String? currentUser = FirebaseAuth.instance.currentUser?.email ?? '';
+              Costumer? costumer = await Costumer.findByEmail(currentUser);
+              Favourites? favorites = await Favourites.findByUserEmail(currentUser);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(
+                    costumer: costumer!,
+                    favourites: favorites!,
+                  ),
+                ),
+              );
             },
           ),
           ListTile(
@@ -52,12 +66,6 @@ class CustomDrawer extends StatelessWidget {
                   builder: (context) => ReservationsScreen(reservations: reservations),
                 ),
               );
-            },
-          ),
-          ListTile(
-            title: const Text('My businesses'),
-            onTap: () {
-              Navigator.pushNamed(context, '/my-businesses/');
             },
           ),
           ListTile(

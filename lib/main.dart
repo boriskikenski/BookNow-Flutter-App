@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
         '/register/': (BuildContext context) => const RegisterScreen(),
         '/home/': (BuildContext context) => const HomeScreen(),
         '/create-business/': (BuildContext context) => const CreateBusinessScreen(),
-        '/profile/': (BuildContext context) => const ProfileScreen(),
         '/my-businesses/': (BuildContext context) => const MyBusinessesScreen(),
       },
     );
