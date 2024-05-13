@@ -122,6 +122,13 @@ class Business {
         .update(updatedBusiness.toMap());
   }
 
+  static Future<void> deleteBusiness(String businessName) async {
+    await FirebaseFirestore.instance
+        .collection('businesses')
+        .doc(businessName)
+        .delete();
+  }
+
   static Map<String, int> _convertDateTimeKeysToString(Map<DateTime, int> dateTimeMap) {
     Map<String, int> stringKeysMap = {};
     dateTimeMap.forEach((key, value) {

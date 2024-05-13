@@ -125,6 +125,13 @@ class Hotel {
         .update(updatedHotel.toMap());
   }
 
+  static Future<void> deleteHotel(String hotelName) async {
+    await FirebaseFirestore.instance
+        .collection('hotels')
+        .doc(hotelName)
+        .delete();
+  }
+
   String _bookingsToString(Map<int, Map<DateTime, int>> bookings) {
     List<Map<String, dynamic>> jsonList = [];
     bookings.forEach((roomCapacity, dateMap) {

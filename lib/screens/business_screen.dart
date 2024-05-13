@@ -2,6 +2,7 @@ import 'package:book_now/model/costumer.dart';
 import 'package:book_now/model/favourites.dart';
 import 'package:book_now/model/review.dart';
 import 'package:book_now/screens/business_checkout_screen.dart';
+import 'package:book_now/screens/qr_code_scanner.dart';
 import 'package:book_now/service/business_hotel_service.dart';
 import 'package:book_now/service/website_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,7 @@ import '../components/custom_drawer.dart';
 import '../model/business.dart';
 import '../model/dto/business_checkout_dto.dart';
 import '../service/image_service.dart';
+import 'business_edit_screen.dart';
 
 class BusinessScreen extends StatefulWidget {
   final Business business;
@@ -33,11 +35,18 @@ class _BusinessScreenState extends State<BusinessScreen> {
   Color _starFourColor = Colors.yellow;
   Color _starFiveColor = Colors.yellow;
   late bool _isFavourite;
+  late bool _isCurrentUserOwner;
 
   @override
   void initState() {
     _reviewComment = TextEditingController();
     _isFavourite = widget.isAlreadyFavourite;
+    String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+    if (widget.business.ownerEmail == currentUserEmail) {
+      _isCurrentUserOwner = true;
+    } else {
+      _isCurrentUserOwner = false;
+    }
     super.initState();
   }
 
@@ -63,6 +72,23 @@ class _BusinessScreenState extends State<BusinessScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (_isCurrentUserOwner)
+              Center(
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const QRScanScreen(),
+                        ),
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Text('Verify reservation'),
+                    )
+                ),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -182,6 +208,37 @@ class _BusinessScreenState extends State<BusinessScreen> {
                 style: const TextStyle(fontSize: 18),
               ),
             ),
+
+            if (_isCurrentUserOwner)
+              Center(
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BusinessEditScreen(existingBusiness: widget.business),
+                        ),
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 57.0),
+                      child: Text('Edit business'),
+                    )
+                ),
+              ),
+            if (_isCurrentUserOwner)
+              Center(
+                child: ElevatedButton(
+                    onPressed: () async {
+                      await Business.deleteBusiness(widget.business.businessName);
+                      Navigator.pushNamedAndRemoveUntil(context, '/home/', (route) => false);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Text('Delete business'),
+                    )
+                ),
+              ),
 
             Center(
               child: ElevatedButton(

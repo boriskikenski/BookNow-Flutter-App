@@ -16,6 +16,10 @@ import '../model/room.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import '../service/favourites_service.dart';
+import 'business_screen.dart';
+import 'hotel_screen.dart';
+
 class CreateBusinessScreen extends StatefulWidget {
   const CreateBusinessScreen({super.key});
 
@@ -411,8 +415,8 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                                 businessLocation,
                                 _selectedStartTime,
                                 _selectedClosingTime,
-                                appointmentSchedule,//TODO tobe implemented
-                                {}, //TODO tobe implemented
+                                appointmentSchedule,
+                                {},
                                 0,
                                 0,
                                 0,
@@ -423,7 +427,15 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                             currentCostumer?.addBusiness(_businessName.text);
                             try {
                               await business.saveBusiness();
-                              Navigator.pushNamedAndRemoveUntil(context, '/my-businesses/', (route) => false);
+                              bool isAlreadyFavourite = await FavouritesService.checkIsFavourite(business.businessName, business.filter);
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) => BusinessScreen(
+                                          business: business,
+                                          isAlreadyFavourite: isAlreadyFavourite)),
+                                      (route) => false
+                              );
                             } on BusinessAlreadyExistException catch (e) {
                               setState(() {
                                 errorMessage = e.toString();
@@ -566,7 +578,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                                 _selectedStartTime,
                                 _selectedClosingTime,
                                 _hotelRooms,
-                                {}, //TODO tobe implemented
+                                {},
                                 0,
                                 0,
                                 0,
@@ -577,7 +589,15 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                             currentCostumer?.addHotel(_businessName.text);
                             try {
                               await hotel.saveHotel();
-                              Navigator.pushNamedAndRemoveUntil(context, '/my-businesses/', (route) => false);
+                              bool isAlreadyFavourite = await FavouritesService.checkIsFavourite(hotel.hotelName, hotel.filter);
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) => HotelScreen(
+                                          hotel: hotel,
+                                          isAlreadyFavourite: isAlreadyFavourite)),
+                                      (route) => false
+                              );
                             } on BusinessAlreadyExistException catch (e) {
                               setState(() {
                                 errorMessage = e.toString();

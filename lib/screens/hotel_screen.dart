@@ -1,6 +1,8 @@
 import 'package:book_now/model/dto/hotel_checkout_dto.dart';
 import 'package:book_now/model/hotel.dart';
 import 'package:book_now/screens/hotel_checkout_screen.dart';
+import 'package:book_now/screens/hotel_edit_screen.dart';
+import 'package:book_now/screens/qr_code_scanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -32,12 +34,19 @@ class _HotelScreenState extends State<HotelScreen> {
   Color _starFourColor = Colors.yellow;
   Color _starFiveColor = Colors.yellow;
   late bool _isFavourite;
+  late bool _isCurrentUserOwner;
 
 
   @override
   void initState() {
     _reviewComment = TextEditingController();
     _isFavourite = widget.isAlreadyFavourite;
+    String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+    if (widget.hotel.ownerEmail == currentUserEmail) {
+      _isCurrentUserOwner = true;
+    } else {
+      _isCurrentUserOwner = false;
+    }
     super.initState();
   }
 
@@ -63,6 +72,23 @@ class _HotelScreenState extends State<HotelScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (_isCurrentUserOwner)
+              Center(
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const QRScanScreen(),
+                        ),
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Text('Verify reservation'),
+                    )
+                ),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -175,6 +201,38 @@ class _HotelScreenState extends State<HotelScreen> {
                 style: const TextStyle(fontSize: 18),
               ),
             ),
+
+            if (_isCurrentUserOwner)
+              Center(
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HotelEditScreen(existingHotel: widget.hotel),
+                        ),
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 57.0),
+                      child: Text('Edit business'),
+                    )
+                ),
+              ),
+            if (_isCurrentUserOwner)
+              Center(
+                child: ElevatedButton(
+                    onPressed: () async {
+                      await Hotel.deleteHotel(widget.hotel.hotelName);
+                      Navigator.pushNamedAndRemoveUntil(context, '/home/', (route) => false);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Text('Delete business'),
+                    )
+                ),
+              ),
+
 
             Center(
               child: ElevatedButton(
