@@ -223,6 +223,8 @@ class _HotelScreenState extends State<HotelScreen> {
               Center(
                 child: ElevatedButton(
                     onPressed: () async {
+                      await Costumer.removeHotel(widget.hotel.hotelName);
+                      await Favourites.removeBusinessFromAllFavourites(widget.hotel.hotelName);
                       await Hotel.deleteHotel(widget.hotel.hotelName);
                       Navigator.pushNamedAndRemoveUntil(context, '/home/', (route) => false);
                     },

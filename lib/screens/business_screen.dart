@@ -230,6 +230,8 @@ class _BusinessScreenState extends State<BusinessScreen> {
               Center(
                 child: ElevatedButton(
                     onPressed: () async {
+                      await Costumer.removeBusiness(widget.business.businessName);
+                      await Favourites.removeBusinessFromAllFavourites(widget.business.businessName);
                       await Business.deleteBusiness(widget.business.businessName);
                       Navigator.pushNamedAndRemoveUntil(context, '/home/', (route) => false);
                     },

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Costumer {
   String fullName;
@@ -72,6 +73,35 @@ class Costumer {
       if (customerData != null) {
         final List<dynamic> existingHotels = customerData['hotelList'];
         final updatedHotelList = [...existingHotels, newHotel];
+        await customerRef.update({'hotelList': updatedHotelList});
+      }
+    }
+  }
+  static Future<void> removeBusiness(String businessToRemove) async {
+    String? currentCostumerEmail = FirebaseAuth.instance.currentUser?.email;
+    final customerRef = FirebaseFirestore.instance.collection('customers').doc(currentCostumerEmail);
+    final customerDoc = await customerRef.get();
+
+    if (customerDoc.exists) {
+      final customerData = customerDoc.data();
+      if (customerData != null) {
+        final List<dynamic> existingBusinesses = customerData['businessList'];
+        final updatedBusinessList = existingBusinesses.where((business) => business != businessToRemove).toList();
+        await customerRef.update({'businessList': updatedBusinessList});
+      }
+    }
+  }
+
+  static Future<void> removeHotel(String hotelToRemove) async {
+    String? currentCostumerEmail = FirebaseAuth.instance.currentUser?.email;
+    final customerRef = FirebaseFirestore.instance.collection('customers').doc(currentCostumerEmail);
+    final customerDoc = await customerRef.get();
+
+    if (customerDoc.exists) {
+      final customerData = customerDoc.data();
+      if (customerData != null) {
+        final List<dynamic> existingHotels = customerData['hotelList'];
+        final updatedHotelList = existingHotels.where((hotel) => hotel != hotelToRemove).toList();
         await customerRef.update({'hotelList': updatedHotelList});
       }
     }

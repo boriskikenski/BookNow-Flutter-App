@@ -118,4 +118,34 @@ class Favourites {
           .update({'businessesFavourites': businessesFavourites});
     }
   }
+
+  static Future<void> removeBusinessFromAllFavourites(String businessName) async {
+    final favouritesCollection = FirebaseFirestore.instance.collection('favourites');
+    final querySnapshot = await favouritesCollection.get();
+
+    for (var doc in querySnapshot.docs) {
+      final data = doc.data();
+      List<dynamic> businessesFavourites = data['businessesFavourites'];
+      List<dynamic> hotelsFavourites = data['hotelsFavourites'];
+
+      bool updated = false;
+
+      if (businessesFavourites.contains(businessName)) {
+        businessesFavourites.remove(businessName);
+        updated = true;
+      }
+
+      if (hotelsFavourites.contains(businessName)) {
+        hotelsFavourites.remove(businessName);
+        updated = true;
+      }
+
+      if (updated) {
+        await doc.reference.update({
+          'businessesFavourites': businessesFavourites,
+          'hotelsFavourites': hotelsFavourites,
+        });
+      }
+    }
+  }
 }
