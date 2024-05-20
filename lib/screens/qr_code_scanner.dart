@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:book_now/model/reservation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanScreen extends StatefulWidget {
-  const QRScanScreen({super.key});
+  final String scanForBusiness;
+  const QRScanScreen({super.key, required this.scanForBusiness});
 
   @override
   State<QRScanScreen> createState() => _QRScanScreenState();
@@ -14,6 +16,7 @@ class _QRScanScreenState extends State<QRScanScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
+  String scanResult = '';
 
   @override
   void reassemble() {
@@ -42,7 +45,7 @@ class _QRScanScreenState extends State<QRScanScreen> {
             child: Center(
               child: (result != null)
                   ? Text(
-                  '${result!.code}')
+                  scanResult)
                   : const Text('No code detected. Scan a code!'),
             ),
           )
@@ -54,7 +57,11 @@ class _QRScanScreenState extends State<QRScanScreen> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
+      setState(() async {
+        Reservation? reservation = await Reservation.findReservation(result!.code.toString());
+        if(widget.scanForBusiness == reservation!.businessName) {
+          scanResult = "Valid reservation! For: ${reservation.reservationOwnerEmail}, on: ${reservation.when.toString()}";
+        }
         result = scanData;
       });
     });

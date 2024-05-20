@@ -79,7 +79,7 @@ class _HotelScreenState extends State<HotelScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const QRScanScreen(),
+                          builder: (context) => QRScanScreen(scanForBusiness: widget.hotel.hotelName),
                         ),
                       );
                     },

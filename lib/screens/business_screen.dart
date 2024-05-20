@@ -79,7 +79,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const QRScanScreen(),
+                          builder: (context) => QRScanScreen(scanForBusiness: widget.business.businessName),
                         ),
                       );
                     },

@@ -37,6 +37,21 @@ class Reservation {
         .set(toMap());
   }
 
+  static Future<Reservation?> findReservation(String qrString) async {
+    final reservationSnapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .doc(qrString)
+        .get();
+
+    if (reservationSnapshot.exists) {
+      final reservationData = reservationSnapshot.data();
+      if (reservationData != null) {
+        return Reservation.fromMap(reservationData);
+      }
+    }
+    return null;
+  }
+
   static Future<List<Reservation>> getAllReservationsForCostumer(String ownerEmail) async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('reservations')
